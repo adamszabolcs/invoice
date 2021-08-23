@@ -4,6 +4,7 @@ import hu.dual.invoice.model.Invoice;
 import hu.dual.invoice.model.InvoiceItem;
 import hu.dual.invoice.model.Product;
 import hu.dual.invoice.repository.InvoiceRepository;
+import hu.dual.invoice.repository.ProductRepository;
 import hu.dual.invoice.service.InvoiceItemService;
 import hu.dual.invoice.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class Application {
     @Autowired
     InvoiceService invoiceService;
 
+    @Autowired
+    ProductRepository productRepository;
+
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(Application.class);
         app.run(args);
@@ -37,8 +41,14 @@ public class Application {
     @Bean
     public CommandLineRunner init() {
         return args -> {
-            Product firstProduct = Product.builder().name("First Product").unitPrice(BigDecimal.valueOf(1200)).build();
+            Product firstProduct = Product.builder()
+                    .name("First Product")
+                    .unitPrice(BigDecimal.valueOf(1200))
+                    .build();
             Product secondProduct = Product.builder().name("Second Product").unitPrice(BigDecimal.valueOf(4299)).build();
+
+            productRepository.save(firstProduct);
+            productRepository.save(secondProduct);
 
             InvoiceItem firstInvoiceItem = InvoiceItem.builder().product(firstProduct).quantity(2).build();
             firstInvoiceItem = invoiceItemService.calculateTotalPriceAndSetToInvoiceItem(firstInvoiceItem, firstProduct);
@@ -54,6 +64,8 @@ public class Application {
                     .dueDate(new Date())
                     .invoiceItems(invoiceItemSet)
                     .invoiceTotal(invoiceService.calculateTotalPrice(invoiceItemSet)).build();
+            firstInvoiceItem.setInvoice(invoice);
+            secondInvoiceItem.setInvoice(invoice);
             invoiceRepository.save(invoice);
         };
     }
