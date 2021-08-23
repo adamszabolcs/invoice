@@ -16,13 +16,13 @@ import java.util.UUID;
 public class Product {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
+            name = "system-uuid",
+            strategy = "uuid"
     )
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+    @Column()
+    private String id;
 
     @Column(name = "name", nullable = false)
     private String name;

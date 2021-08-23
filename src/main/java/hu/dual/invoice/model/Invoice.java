@@ -3,6 +3,7 @@ package hu.dual.invoice.model;
 import lombok.*;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -19,13 +20,13 @@ import java.util.UUID;
 public class Invoice {
     
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
+            name = "system-uuid",
+            strategy = "uuid"
     )
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+    @Column()
+    private String id;
 
     @Column(name = "customer_name", nullable = false)
     private String customerName;
@@ -36,11 +37,11 @@ public class Invoice {
     @Column(name = "due_date", nullable = false)
     private Date dueDate;
 
-    @Column(name = "comment")
-    private String comment;
+    @Column(name = "user_comment")
+    private String userComment;
 
     @ElementCollection
-    @OneToMany(mappedBy = "invoice")
+    @OneToMany(mappedBy = "invoice", targetEntity = InvoiceItem.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<InvoiceItem> invoiceItems;
 
     @Column(name = "invoice_total")

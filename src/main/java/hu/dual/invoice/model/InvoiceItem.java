@@ -9,22 +9,23 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "invoice_item")
 @Builder
 @Getter
 @Setter
 public class InvoiceItem {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
+            name = "system-uuid",
+            strategy = "uuid"
     )
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+    @Column()
+    private String id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "invoice_id", referencedColumnName = "id")
     private Invoice invoice;
 
     @OneToOne
