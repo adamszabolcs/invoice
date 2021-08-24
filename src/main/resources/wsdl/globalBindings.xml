@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jaxb:bindings xmlns="http://java.sun.com/xml/ns/jaxb"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:annox="http://annox.dev.java.net"
+	version="2.1">
+
+	<jaxb:globalBindings typesafeEnumMaxMembers="500" generateElementProperty="false">
+		<jaxb:serializable uid="1"/>
+		<xjc:simple />
+	</jaxb:globalBindings>
+
+</jaxb:bindings>
