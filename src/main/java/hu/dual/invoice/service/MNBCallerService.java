@@ -2,11 +2,13 @@ package hu.dual.invoice.service;
 
 import hu.dual.invoice.model.Currencies;
 import hu.mnb.webservices.GetExchangeRatesRequestBody;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Component
 public class MNBCaller {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
