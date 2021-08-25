@@ -1,30 +1,31 @@
 package hu.dual.invoice.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Entity(name = "invoice_item")
 @Builder
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class InvoiceItem {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(
             name = "system-uuid",
-            strategy = "uuid"
+            strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Column()
     private String id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoice_id", referencedColumnName = "id")
     private Invoice invoice;
 
@@ -37,5 +38,7 @@ public class InvoiceItem {
 
     @Column(name = "total_price")
     private BigDecimal totalPrice;
+
+    private BigDecimal totalPriceInEUR;
 
 }

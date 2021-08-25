@@ -1,21 +1,21 @@
 package hu.dual.invoice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Set;
-import java.util.UUID;
+import java.util.List;
 
 @Entity(name = "invoice")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Setter
 @Getter
 public class Invoice {
     
@@ -23,9 +23,8 @@ public class Invoice {
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(
             name = "system-uuid",
-            strategy = "uuid"
+            strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Column()
     private String id;
 
     @Column(name = "customer_name", nullable = false)
@@ -40,11 +39,12 @@ public class Invoice {
     @Column(name = "user_comment")
     private String userComment;
 
-    @ElementCollection
     @OneToMany(mappedBy = "invoice", targetEntity = InvoiceItem.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<InvoiceItem> invoiceItems;
+    private List<InvoiceItem> invoiceItems = new ArrayList<>();
 
     @Column(name = "invoice_total")
     private BigDecimal invoiceTotal;
-    
+
+    private BigDecimal invoiceTotalInEUR;
+
 }
