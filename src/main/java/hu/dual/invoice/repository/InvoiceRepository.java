@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
+public interface InvoiceRepository extends JpaRepository<Invoice, String> {
 
-    Invoice findInvoiceById(UUID id);
+    Invoice findInvoiceById(String id);
 
 }
