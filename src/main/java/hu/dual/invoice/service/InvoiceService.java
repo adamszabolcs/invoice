@@ -7,9 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 @Component
 public class InvoiceService {
@@ -17,10 +16,10 @@ public class InvoiceService {
     @Autowired
     InvoiceRepository invoiceRepository;
 
-    public BigDecimal calculateTotalPrice(Set<InvoiceItem> invoiceItemSet) {
+    public BigDecimal calculateTotalPrice(List<InvoiceItem> invoiceItemList) {
         BigDecimal total = BigDecimal.ZERO;
 
-        for (InvoiceItem item : invoiceItemSet) {
+        for (InvoiceItem item : invoiceItemList) {
             total = total.add(item.getTotalPrice());
         }
         return total;
@@ -31,10 +30,21 @@ public class InvoiceService {
     }
 
     public Invoice getInvoiceById(String id) {
-        return invoiceRepository.findInvoiceById(UUID.fromString(id));
+        return invoiceRepository.findInvoiceById(id);
     }
 
     public void saveInvoice(Invoice invoice) {
         invoiceRepository.save(invoice);
     }
+
+    public List<Invoice> calculateTotalPriceInEUR(List<Invoice> invoiceList) {
+        for (Invoice invoice : invoiceList) {
+            invoice.setInvoiceTotalInEUR(invoice.getInvoiceTotal().divide(CurrencyExchangeService.exchangeRate, 2, RoundingMode.HALF_UP));
+            for (InvoiceItem item : invoice.getInvoiceItems()) {
+                item.setTotalPriceInEUR(item.getTotalPrice().divide(CurrencyExchangeService.exchangeRate, 2, RoundingMode.HALF_UP));
+            }
+        }
+        return invoiceList;
+    }
+
 }
