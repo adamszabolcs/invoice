@@ -6,7 +6,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 
 @Component
 public class CurrencyExchangeService {
@@ -14,12 +13,12 @@ public class CurrencyExchangeService {
     public static BigDecimal exchangeRate;
 
     @Autowired
-    MNBCaller mnbCaller;
+    MNBCallerService mnbCallerService;
 
-    @Scheduled
-    public void getActualExchangeRate() {
-        exchangeRate = BigDecimal.ZERO;
-        exchangeRate.add(mnbCaller.getActualExchangeRate(Currencies.EUR));
+    @Scheduled(cron = "1 0 * * * *")
+    //@Scheduled(cron = "* * * * * *")
+    public void getActualExchangeRate() throws Exception {
+        exchangeRate = mnbCallerService.getActualExchangeRate(Currencies.EUR);
     }
 
 }
