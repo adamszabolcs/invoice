@@ -5,6 +5,7 @@ import hu.dual.invoice.model.InvoiceItem;
 import hu.dual.invoice.model.Product;
 import hu.dual.invoice.repository.InvoiceRepository;
 import hu.dual.invoice.repository.ProductRepository;
+import hu.dual.invoice.service.CurrencyExchangeService;
 import hu.dual.invoice.service.InvoiceItemService;
 import hu.dual.invoice.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,16 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+
 
 @SpringBootApplication
+@EnableScheduling
 public class Application {
 
     @Autowired
@@ -32,6 +36,9 @@ public class Application {
 
     @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    CurrencyExchangeService currencyExchangeService;
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(Application.class);
@@ -55,7 +62,7 @@ public class Application {
             InvoiceItem secondInvoiceItem = InvoiceItem.builder().product(secondProduct).quantity(4).build();
             secondInvoiceItem = invoiceItemService.calculateTotalPriceAndSetToInvoiceItem(secondInvoiceItem, secondProduct);
 
-            Set<InvoiceItem> invoiceItemSet = new HashSet<>();
+            List<InvoiceItem> invoiceItemSet = new ArrayList<>();
             invoiceItemSet.add(firstInvoiceItem);
             invoiceItemSet.add(secondInvoiceItem);
             Invoice invoice = Invoice.builder()
@@ -67,6 +74,8 @@ public class Application {
             firstInvoiceItem.setInvoice(invoice);
             secondInvoiceItem.setInvoice(invoice);
             invoiceRepository.save(invoice);
+
+            currencyExchangeService.getActualExchangeRate();
         };
     }
 }
