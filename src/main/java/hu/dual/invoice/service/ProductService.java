@@ -5,7 +5,6 @@ import hu.dual.invoice.model.Product;
 import hu.dual.invoice.repository.InvoiceRepository;
 import hu.dual.invoice.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 public class ProductService {
 

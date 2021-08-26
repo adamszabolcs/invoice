@@ -27,7 +27,6 @@ public class MNBCallerService {
         request.setEndDate(dateFormat.format(new Date()));
 
         GetExchangeRatesResponseBody response = client.getExchangeRates(request);
-        System.out.println(response.getGetExchangeRatesResult());
         Document doc = XMLUtil.stringToDocument(response.getGetExchangeRatesResult());
 
         Node rateNode = doc.getFirstChild().getFirstChild();
