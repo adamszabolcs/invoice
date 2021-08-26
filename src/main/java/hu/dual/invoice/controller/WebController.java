@@ -25,20 +25,35 @@ public class WebController {
     @Autowired
     InvoiceItemService invoiceItemService;
 
-    @GetMapping("/get-exchange-rate")
+    @GetMapping("/api/get-exchange-rate")
     public BigDecimal getExchangeRate() {
         return CurrencyExchangeService.exchangeRate;
     }
 
 
-    @GetMapping("/invoices")
+    @GetMapping("/api/invoices")
     public List<Invoice> getInvoices() {
         List<Invoice> invoiceList = invoiceService.getAllInvoice();
-        invoiceList = invoiceService.calculateTotalPriceInEUR(invoiceList);
+        for (Invoice invoice : invoiceList){
+            invoice.setInvoiceTotalInEUR(invoiceService.calculateTotalPriceInEUR(invoice));
+            for (InvoiceItem item : invoice.getInvoiceItems()) {
+                item.setTotalPriceInEUR(invoiceItemService.calculateInvoiceItemTotalPriceInEUR(item));
+            }
+        }
         return invoiceList;
     }
 
-    @GetMapping("/invoice/{invoice-id}")
+    @GetMapping("/api/invoice/{invoice-id}")
+    public Invoice getInvoiceById(@PathVariable("invoice-id") String invoiceId) {
+        Invoice invoice = invoiceService.getInvoiceById(invoiceId);
+        invoice.setInvoiceTotalInEUR(invoiceService.calculateTotalPriceInEUR(invoice));
+        for (InvoiceItem item : invoice.getInvoiceItems()) {
+            item.setTotalPriceInEUR(invoiceItemService.calculateInvoiceItemTotalPriceInEUR(item));
+        }
+        return invoice;
+    }
+
+    @GetMapping("/api/invoice-items/{invoice-id}")
     public List<InvoiceItem> getInvoiceItems(@PathVariable("invoice-id") String invoiceId) {
         List<InvoiceItem> invoiceItems = invoiceItemService.getAllInvoiceItemByInvoiceId(invoiceId);
         invoiceItems = invoiceItemService.calculateTotalPriceInEUR(invoiceItems);
@@ -48,7 +63,7 @@ public class WebController {
     @PostMapping("/invoice")
     public ResponseEntity<?> saveInvoice(@RequestBody String invoiceData) {
         ObjectMapper mapper = new ObjectMapper();
-        Invoice invoice = null;
+        Invoice invoice;
         try {
             JsonNode dataTree = mapper.readTree(invoiceData);
             invoice = mapper.treeToValue(dataTree.get("invoice"), Invoice.class);
