@@ -12,7 +12,7 @@ public class XMLUtil {
     public static Document stringToDocument(String xml) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-        DocumentBuilder builder = null;
+        DocumentBuilder builder;
 
         try {
             builder = factory.newDocumentBuilder();
