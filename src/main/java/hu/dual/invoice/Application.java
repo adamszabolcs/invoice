@@ -3,6 +3,7 @@ package hu.dual.invoice;
 import hu.dual.invoice.model.Invoice;
 import hu.dual.invoice.model.InvoiceItem;
 import hu.dual.invoice.model.Product;
+import hu.dual.invoice.repository.InvoiceItemRepository;
 import hu.dual.invoice.repository.InvoiceRepository;
 import hu.dual.invoice.repository.ProductRepository;
 import hu.dual.invoice.service.CurrencyExchangeService;
@@ -27,6 +28,9 @@ public class Application {
 
     @Autowired
     InvoiceRepository invoiceRepository;
+
+    @Autowired
+    InvoiceItemRepository invoiceItemRepository;
 
     @Autowired
     InvoiceItemService invoiceItemService;
@@ -57,10 +61,16 @@ public class Application {
             productRepository.save(firstProduct);
             productRepository.save(secondProduct);
 
-            InvoiceItem firstInvoiceItem = InvoiceItem.builder().product(firstProduct).quantity(2).build();
-            firstInvoiceItem = invoiceItemService.calculateTotalPriceAndSetToInvoiceItem(firstInvoiceItem, firstProduct);
-            InvoiceItem secondInvoiceItem = InvoiceItem.builder().product(secondProduct).quantity(4).build();
-            secondInvoiceItem = invoiceItemService.calculateTotalPriceAndSetToInvoiceItem(secondInvoiceItem, secondProduct);
+            InvoiceItem firstInvoiceItem = InvoiceItem.builder()
+                    .product(firstProduct)
+                    .quantity(2)
+                    .build();
+            firstInvoiceItem.setTotalPrice(invoiceItemService.calculateTotalPriceOfInvoiceItem(firstInvoiceItem, firstProduct));
+            InvoiceItem secondInvoiceItem = InvoiceItem.builder()
+                    .product(secondProduct)
+                    .quantity(4)
+                    .build();
+            secondInvoiceItem.setTotalPrice(invoiceItemService.calculateTotalPriceOfInvoiceItem(secondInvoiceItem, secondProduct));
 
             List<InvoiceItem> invoiceItemSet = new ArrayList<>();
             invoiceItemSet.add(firstInvoiceItem);
@@ -74,6 +84,33 @@ public class Application {
             firstInvoiceItem.setInvoice(invoice);
             secondInvoiceItem.setInvoice(invoice);
             invoiceRepository.save(invoice);
+
+            InvoiceItem thirdInvoiceItem = InvoiceItem.builder()
+                    .product(firstProduct)
+                    .quantity(130)
+                    .build();
+            thirdInvoiceItem.setTotalPrice(invoiceItemService.calculateTotalPriceOfInvoiceItem(thirdInvoiceItem, firstProduct));
+            InvoiceItem fourthInvoiceItem = InvoiceItem.builder()
+                    .product(secondProduct)
+                    .quantity(6)
+                    .build();
+            fourthInvoiceItem.setTotalPrice(invoiceItemService.calculateTotalPriceOfInvoiceItem(fourthInvoiceItem, secondProduct));
+
+            List<InvoiceItem> invoiceItemSet2 = new ArrayList<>();
+            invoiceItemSet2.add(thirdInvoiceItem);
+            invoiceItemSet2.add(fourthInvoiceItem);
+            Invoice invoice2 = Invoice.builder()
+                    .customerName("Customer name No. 2")
+                    .issueDate(new Date())
+                    .dueDate(new Date())
+                    .invoiceItems(invoiceItemSet2)
+                    .invoiceTotal(invoiceService.calculateTotalPrice(invoiceItemSet2))
+                    .userComment("This is a user comment.")
+                    .build();
+            fourthInvoiceItem.setInvoice(invoice2);
+            thirdInvoiceItem.setInvoice(invoice2);
+
+            invoiceRepository.save(invoice2);
 
             currencyExchangeService.getActualExchangeRate();
         };
