@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.dual.invoice.model.Invoice;
 import hu.dual.invoice.model.InvoiceItem;
+import hu.dual.invoice.model.Product;
 import hu.dual.invoice.service.CurrencyExchangeService;
 import hu.dual.invoice.service.InvoiceItemService;
 import hu.dual.invoice.service.InvoiceService;
@@ -66,7 +67,9 @@ public class WebController {
         Invoice invoice;
         try {
             JsonNode dataTree = mapper.readTree(invoiceData);
+            List<InvoiceItem> invoiceItems = mapper.treeToValue(dataTree.get("invoiceItems"), List.class);
             invoice = mapper.treeToValue(dataTree.get("invoice"), Invoice.class);
+            invoice.setInvoiceItems(invoiceItems);
             invoiceService.saveInvoice(invoice);
         } catch (IOException e) {
             e.printStackTrace();
