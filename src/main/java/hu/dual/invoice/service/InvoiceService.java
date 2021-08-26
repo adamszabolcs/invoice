@@ -18,7 +18,6 @@ public class InvoiceService {
 
     public BigDecimal calculateTotalPrice(List<InvoiceItem> invoiceItemList) {
         BigDecimal total = BigDecimal.ZERO;
-
         for (InvoiceItem item : invoiceItemList) {
             total = total.add(item.getTotalPrice());
         }
@@ -37,14 +36,8 @@ public class InvoiceService {
         invoiceRepository.save(invoice);
     }
 
-    public List<Invoice> calculateTotalPriceInEUR(List<Invoice> invoiceList) {
-        for (Invoice invoice : invoiceList) {
-            invoice.setInvoiceTotalInEUR(invoice.getInvoiceTotal().divide(CurrencyExchangeService.exchangeRate, 2, RoundingMode.HALF_UP));
-            for (InvoiceItem item : invoice.getInvoiceItems()) {
-                item.setTotalPriceInEUR(item.getTotalPrice().divide(CurrencyExchangeService.exchangeRate, 2, RoundingMode.HALF_UP));
-            }
-        }
-        return invoiceList;
+    public BigDecimal calculateTotalPriceInEUR(Invoice invoice) {
+        return invoice.getInvoiceTotal().divide(CurrencyExchangeService.exchangeRate, 2, RoundingMode.HALF_UP);
     }
 
 }

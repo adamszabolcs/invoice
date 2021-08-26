@@ -18,17 +18,10 @@ public class InvoiceItemService {
     InvoiceItemRepository invoiceItemRepository;
 
 
-    public InvoiceItem calculateTotalPriceAndSetToInvoiceItem(InvoiceItem item, Product product) {
+    public BigDecimal calculateTotalPriceOfInvoiceItem(InvoiceItem item, Product product) {
         int quantity = item.getQuantity();
         BigDecimal unitPrice = product.getUnitPrice();
-        BigDecimal totalUnitPrice = unitPrice.multiply(BigDecimal.valueOf(quantity));
-
-        item.setTotalPrice(totalUnitPrice);
-        return item;
-    }
-
-    public List<InvoiceItem> getAllInvoiceItemByInvoice(Invoice invoice) {
-        return invoiceItemRepository.findAllByInvoice(invoice);
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
     }
 
     public List<InvoiceItem> getAllInvoiceItemByInvoiceId(String invoiceId) {
@@ -37,9 +30,13 @@ public class InvoiceItemService {
 
     public List<InvoiceItem> calculateTotalPriceInEUR(List<InvoiceItem> invoiceItemList) {
         for (InvoiceItem item : invoiceItemList) {
-            item.setTotalPriceInEUR(item.getTotalPrice().divide(CurrencyExchangeService.exchangeRate, 2, RoundingMode.HALF_UP));
+            item.setTotalPriceInEUR(calculateInvoiceItemTotalPriceInEUR(item));
         }
         return invoiceItemList;
+    }
+
+    public BigDecimal calculateInvoiceItemTotalPriceInEUR(InvoiceItem invoiceItem) {
+        return invoiceItem.getTotalPrice().divide(CurrencyExchangeService.exchangeRate, 2, RoundingMode.HALF_UP);
     }
 
 }
