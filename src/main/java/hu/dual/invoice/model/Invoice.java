@@ -1,6 +1,5 @@
 package hu.dual.invoice.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -17,6 +16,7 @@ import java.util.List;
 @Builder
 @Setter
 @Getter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Invoice {
     
     @Id
@@ -25,6 +25,7 @@ public class Invoice {
             name = "system-uuid",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
+    @Column(name = "id")
     private String id;
 
     @Column(name = "customer_name", nullable = false)
@@ -45,6 +46,7 @@ public class Invoice {
     @Column(name = "invoice_total")
     private BigDecimal invoiceTotal;
 
+    @Transient
     private BigDecimal invoiceTotalInEUR;
 
 }
