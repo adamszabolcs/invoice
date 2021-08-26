@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class InvoiceItem {
 
     @Id
@@ -29,7 +30,7 @@ public class InvoiceItem {
     @JoinColumn(name = "invoice_id", referencedColumnName = "id")
     private Invoice invoice;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 
@@ -39,6 +40,7 @@ public class InvoiceItem {
     @Column(name = "total_price")
     private BigDecimal totalPrice;
 
+    @Transient
     private BigDecimal totalPriceInEUR;
 
 }
