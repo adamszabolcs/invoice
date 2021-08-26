@@ -1,17 +1,20 @@
 package hu.dual.invoice.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity(name = "product")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Product {
 
     @Id
@@ -29,7 +32,7 @@ public class Product {
     private BigDecimal unitPrice;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "product")
-    private InvoiceItem invoiceItem;
+    @OneToMany(mappedBy = "product", targetEntity = InvoiceItem.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<InvoiceItem> invoiceItems;
 
 }
