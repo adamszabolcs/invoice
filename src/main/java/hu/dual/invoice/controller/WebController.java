@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.dual.invoice.model.Invoice;
 import hu.dual.invoice.model.InvoiceItem;
-import hu.dual.invoice.model.Product;
 import hu.dual.invoice.service.CurrencyExchangeService;
 import hu.dual.invoice.service.InvoiceItemService;
 import hu.dual.invoice.service.InvoiceService;
@@ -37,9 +36,6 @@ public class WebController {
         List<Invoice> invoiceList = invoiceService.getAllInvoice();
         for (Invoice invoice : invoiceList){
             invoice.setInvoiceTotalInEUR(invoiceService.calculateTotalPriceInEUR(invoice));
-            for (InvoiceItem item : invoice.getInvoiceItems()) {
-                item.setTotalPriceInEUR(invoiceItemService.calculateInvoiceItemTotalPriceInEUR(item));
-            }
         }
         return invoiceList;
     }
@@ -67,15 +63,16 @@ public class WebController {
         Invoice invoice;
         try {
             JsonNode dataTree = mapper.readTree(invoiceData);
-            List<InvoiceItem> invoiceItems = mapper.treeToValue(dataTree.get("invoiceItems"), List.class);
             invoice = mapper.treeToValue(dataTree.get("invoice"), Invoice.class);
-            invoice.setInvoiceItems(invoiceItems);
+            for (InvoiceItem item : invoice.getInvoiceItems()) {
+                item.setInvoice(invoice);
+            }
             invoiceService.saveInvoice(invoice);
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }
