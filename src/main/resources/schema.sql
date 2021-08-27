@@ -1,4 +1,4 @@
-CREATE TABLE "Invoice_item" (
+CREATE TABLE "invoice_item" (
 	"id" VARCHAR2(255) NOT NULL,
 	"invoice_id" VARCHAR2(255) NOT NULL,
 	"product_id" VARCHAR2(255) NOT NULL,
@@ -8,18 +8,18 @@ CREATE TABLE "Invoice_item" (
 
 
 /
-CREATE TABLE "Invoice" (
+CREATE TABLE "invoice" (
 	"id" VARCHAR2(255) NOT NULL,
 	"customer_name" VARCHAR2(255) NOT NULL,
 	"issue_date" DATE NOT NULL,
 	"due_date" DATE NOT NULL,
-	"comment" VARCHAR2(255),
+	"user_comment" VARCHAR2(255),
 	"total" FLOAT NOT NULL,
 	constraint INVOICE_PK PRIMARY KEY ("id"));
 
 
 /
-CREATE TABLE "Product" (
+CREATE TABLE "product" (
 	"id" VARCHAR2(255) NOT NULL,
 	"name" VARCHAR2(255) NOT NULL,
 	"unit_price" FLOAT NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE "Product" (
 
 
 /
-ALTER TABLE "Invoice_item" ADD CONSTRAINT "Invoice_item_fk0" FOREIGN KEY ("invoice_id") REFERENCES "Invoice"("id");
-ALTER TABLE "Invoice_item" ADD CONSTRAINT "Invoice_item_fk1" FOREIGN KEY ("product_id") REFERENCES "Product"("id");
+ALTER TABLE "invoice_item" ADD CONSTRAINT "invoice_item_fk0" FOREIGN KEY ("invoice_id") REFERENCES "invoice"("id");
+ALTER TABLE "invoice_item" ADD CONSTRAINT "invoice_item_fk1" FOREIGN KEY ("product_id") REFERENCES "product"("id");
 
 
