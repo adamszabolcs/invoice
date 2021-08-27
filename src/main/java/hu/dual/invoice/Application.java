@@ -3,7 +3,6 @@ package hu.dual.invoice;
 import hu.dual.invoice.model.Invoice;
 import hu.dual.invoice.model.InvoiceItem;
 import hu.dual.invoice.model.Product;
-import hu.dual.invoice.repository.InvoiceItemRepository;
 import hu.dual.invoice.repository.InvoiceRepository;
 import hu.dual.invoice.repository.ProductRepository;
 import hu.dual.invoice.service.CurrencyExchangeService;
@@ -30,9 +29,6 @@ public class Application {
     InvoiceRepository invoiceRepository;
 
     @Autowired
-    InvoiceItemRepository invoiceItemRepository;
-
-    @Autowired
     InvoiceItemService invoiceItemService;
 
     @Autowired
@@ -56,7 +52,10 @@ public class Application {
                     .name("First Product")
                     .unitPrice(BigDecimal.valueOf(1200))
                     .build();
-            Product secondProduct = Product.builder().name("Second Product").unitPrice(BigDecimal.valueOf(4299)).build();
+            Product secondProduct = Product.builder()
+                    .name("Second Product")
+                    .unitPrice(BigDecimal.valueOf(4299))
+                    .build();
 
             productRepository.save(firstProduct);
             productRepository.save(secondProduct);
