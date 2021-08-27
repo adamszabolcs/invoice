@@ -1,6 +1,5 @@
 package hu.dual.invoice.service;
 
-import hu.dual.invoice.model.Invoice;
 import hu.dual.invoice.model.InvoiceItem;
 import hu.dual.invoice.model.Product;
 import hu.dual.invoice.repository.InvoiceItemRepository;
