@@ -19,7 +19,7 @@ let dom = {
                                             <li><b>Due date: </b>${invoiceData.dueDate}</li>
                                             <li><b>Comment: </b>${invoiceData.userComment === null ? "-" : invoiceData.userComment}</li>
                                             <li><b>Invoice total: </b>${invoiceData.invoiceTotal} HUF </li>
-                                            <li><b>Invoice total in EUR: </b>${invoiceData.invoiceTotalInEUR} EUR</li>`
+                                            <li><b>Invoice total in EUR: </b>${invoiceData.invoiceTotalInEUR} EUR</li>`;
     },
 
     createInvoiceItemTable: function(invoiceItemData, invoiceItemTable) {
